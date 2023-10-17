@@ -1,0 +1,6 @@
+/dependencies/
+/env/
+/aws_lambda_artifact.zip
+.idea/
+__pycache__/
+
