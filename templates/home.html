@@ -14,12 +14,11 @@
             <div class="row mx-2">
                 {% if message['role'] == 'assistant' %}
                 <div class="card chat-message message-assistant bg-secondary">
-                    <h5 class="card-body text-white lh-base">{{ message['content']|capitalize }}</h5>
+                    <h5 class="card-body text-white lh-base">{{ message['content'] }}</h5>
                 </div>
                 {% elif message['role'] == 'user' %}
-                <!-- <div class="w-25"></div> -->
                 <div class="card chat-message message-user bg-primary">
-                    <h5 class="card-body text-white lh-base">{{ message['content']|capitalize }}</h5>
+                    <h5 class="card-body text-white lh-base">{{ message['content'] }}</h5>
                 </div>
                 {% endif %}
             </div>

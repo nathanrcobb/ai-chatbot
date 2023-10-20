@@ -18,6 +18,7 @@
         margin-bottom: 1rem;
         border-radius: 20px;
         line-height: 1.4;
+        white-space: pre-wrap;
     }
 
     .chat-message.message-assistant {
