@@ -1,0 +1,66 @@
+:root {
+    --custom-font-roboto: "Roboto", sans-serif;
+}
+
+#chat-log {
+    height: 80vh;
+    margin-bottom: 1rem;
+
+    .message-container {
+        display: flex;
+        flex-direction: column;
+        justify-content: end;
+    }
+
+    .chat-message {
+        width: 75%;
+        margin-top: 1rem;
+        margin-bottom: 1rem;
+        border-radius: 20px;
+        line-height: 1.4;
+    }
+
+    .chat-message.message-assistant {
+        width: fit-content;
+        max-width: 75%;
+        margin-right: auto;
+    }
+
+    .chat-message.message-user {
+        width: fit-content;
+        max-width: 75%;
+        margin-left: auto;
+    }
+}
+
+#chat-input {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+
+    > textarea {
+        height: 4rem;
+        border-radius: 10px;
+        margin-right: 1rem;
+    }
+
+    > button {
+        height: 4rem;
+        width: 4rem;
+        border-radius: 10px;
+
+        > span {
+            font-size: 2rem;
+        }
+    }
+}
+
+.font-roboto {
+    font-family: sans-serif; /* Legacy fallback */
+    font-family: var(--custom-font-roboto);
+}
+.font-roboto-bold {
+    font-family: sans-serif; /* Legacy fallback */
+    font-family: var(--custom-font-roboto);
+    font-weight: 700;
+}
