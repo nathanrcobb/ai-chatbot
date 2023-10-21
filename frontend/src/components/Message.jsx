@@ -1,6 +1,6 @@
-function Message({ key, message }) {
+function Message({ message }) {
     return (
-        <div key={key} className="row mx-2">
+        <div className="row mx-2">
             {message && message.role === "assistant" && (
                 <div className="card chat-message message-assistant bg-secondary">
                     <h5 className="card-body text-white lh-base">

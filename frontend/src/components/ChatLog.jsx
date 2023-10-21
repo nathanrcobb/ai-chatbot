@@ -1,6 +1,5 @@
 import { useEffect } from "react";
 import Message from "./Message";
-import { v4 } from "uuid";
 
 function ChatLog({ messages, userTyping, loading }) {
     useEffect(() => {
@@ -16,8 +15,11 @@ function ChatLog({ messages, userTyping, loading }) {
                         <div id="chat-log">
                             <div id="container message-container">
                                 {messages &&
-                                    messages.map((message) => (
-                                        <Message key={v4()} message={message} />
+                                    messages.map((message, index) => (
+                                        <Message
+                                            key={index}
+                                            message={message}
+                                        />
                                     ))}
                             </div>
                         </div>
@@ -48,8 +50,8 @@ function ChatLog({ messages, userTyping, loading }) {
                     <div id="chat-log">
                         <div id="container message-container">
                             {messages &&
-                                messages.map((message) => (
-                                    <Message message={message} />
+                                messages.map((message, index) => (
+                                    <Message key={index} message={message} />
                                 ))}
                         </div>
                     </div>
