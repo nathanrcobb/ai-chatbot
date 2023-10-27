@@ -59,6 +59,18 @@ body {
         max-width: 75%;
         margin-left: auto;
     }
+
+    .chat-message.message-image {
+        width: fit-content;
+        max-width: 100%;
+        padding-top: 0.75rem;
+        padding-bottom: 0.75rem;
+
+        > a > img {
+            max-width: 100%;
+            border-radius: 10px;
+        }
+    }
 }
 
 #chat-input {
@@ -91,6 +103,7 @@ body {
     margin-top: 0.5rem;
     margin-right: 1.5rem;
     margin-left: auto;
+    animation: fade-in 0.25s linear;
 
     > ul {
         display: flex;
@@ -120,6 +133,7 @@ body {
     margin-top: 0.5rem;
     margin-right: auto;
     margin-left: 0.4rem;
+    animation: fade-in 0.25s linear;
 
     > ul {
         display: flex;
@@ -166,6 +180,15 @@ body {
     }
     100% {
         transform: rotate(-2deg);
+    }
+}
+
+@keyframes fade-in {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
     }
 }
 

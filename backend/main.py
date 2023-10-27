@@ -83,11 +83,12 @@ async def get_chat_logs():
 async def chat(request: Request, user_input: UserInputIn):
     # Append user input to chat log
     app.chat_log.append({"role": "user", "content": user_input.prompt})
+    ai_prompts = [log_entry for log_entry in app.chat_log if not log_entry.get("role") == "image"]
 
     # Make call to OpenAI API
     response = openai.ChatCompletion.create(
         model="gpt-3.5-turbo",
-        messages=app.chat_log,
+        messages=ai_prompts,
         temperature=0.8,
         max_tokens=500
     )
@@ -99,6 +100,26 @@ async def chat(request: Request, user_input: UserInputIn):
     app.chat_log.append({"role": "assistant", "content": bot_response})
 
     return JSONResponse(content=app.chat_log)
+
+@app.post("/i")
+async def chat(request: Request, user_input: UserInputIn):
+    # Append user input to chat log
+    app.chat_log.append({"role": "user", "content": user_input.prompt})
+
+    # Make call to OpenAI API
+    response = openai.Image.create(
+        prompt=user_input.prompt,
+        n=1,
+        size="1024x1024"
+    )
+
+    # Get response from OpenAI API
+    bot_response = response.get("data", [])[0].get("url")
+
+    # Append assistant response to chat log
+    app.chat_log.append({"role": "image", "content": bot_response})
+
+    return JSONResponse(content=bot_response)
 
 @app.delete("/")
 async def clear_chat_log():

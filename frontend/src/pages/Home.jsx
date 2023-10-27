@@ -26,8 +26,19 @@ function Home() {
         fetchMessages();
     }, []);
 
+    const handleKeyDown = (e) => {
+        if (e.key === "Enter") {
+            e.preventDefault();
+            handleUserInputSubmit();
+        }
+    };
+
     const handleUserInputSubmit = async (e) => {
-        e.preventDefault();
+        e?.preventDefault();
+
+        const input = userInput.toLowerCase();
+        const isImagePrompt = input.startsWith("/image ");
+
         if (userInput.length === 0) {
             setError(true);
         } else {
@@ -37,7 +48,7 @@ function Home() {
             setMessages([...messages, { role: "user", content: userInput }]);
             setUserInput("");
 
-            await fetch(`${baseURL}/`, {
+            await fetch(`${baseURL}/${isImagePrompt ? "i" : ""}`, {
                 method: "POST",
                 headers: {
                     Accept: "application/json",
@@ -49,6 +60,12 @@ function Home() {
                 setInputDisabled(false);
                 fetchMessages();
             });
+
+            setTimeout(() => {
+                const chat_window =
+                    document.querySelector("#chat-log").parentElement;
+                chat_window.scrollTo(0, chat_window.scrollHeight);
+            }, 200);
         }
     };
 
@@ -97,6 +114,7 @@ function Home() {
                     setUserTyping={setUserTyping}
                     error={error}
                     setError={setError}
+                    handleKeyDown={handleKeyDown}
                     handleUserInputSubmit={handleUserInputSubmit}
                     userInput={userInput}
                     setUserInput={setUserInput}

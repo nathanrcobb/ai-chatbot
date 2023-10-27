@@ -15,6 +15,16 @@ function Message({ message }) {
                     </h5>
                 </div>
             )}
+            {message && message.role === "image" && (
+                <div className="card chat-message message-image bg-dark">
+                    <a href={message.content} rel="noreferrer" target="_blank">
+                        <img
+                            src={message.content}
+                            alt={message.content + "image"}
+                        />
+                    </a>
+                </div>
+            )}
         </div>
     );
 }

@@ -3,6 +3,7 @@ function TextInput({
     setUserTyping,
     error,
     setError,
+    handleKeyDown,
     handleUserInputSubmit,
     userInput,
     setUserInput,
@@ -28,6 +29,7 @@ function TextInput({
                         name="user_input"
                         className="form-control"
                         placeholder="Type message"
+                        onKeyDown={handleKeyDown}
                         onChange={onUserInputChange}
                         value={userInput}
                         disabled={inputDisabled}
