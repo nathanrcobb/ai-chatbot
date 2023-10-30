@@ -1,11 +1,12 @@
 import { useEffect } from "react";
 import Message from "./Message";
 
-function ChatLog({ messages, userTyping, loading }) {
+function ChatLog({ messages, userTyping, loading, scrollToBottom }) {
     useEffect(() => {
-        const chat_window = document.querySelector("#chat-log").parentElement;
-        chat_window.scrollTo(0, chat_window.scrollHeight);
-    }, [messages, userTyping]);
+        scrollToBottom();
+
+        // eslint-disable-next-line
+    }, [messages, userTyping, loading]);
 
     return (
         <>

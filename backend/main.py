@@ -3,7 +3,6 @@ import os
 from dotenv import load_dotenv
 import openai
 from fastapi import FastAPI, Request
-from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
@@ -13,6 +12,20 @@ access_token = os.getenv("OPENAI_API_KEY", "")
 if not access_token:
     raise KeyError("OPENAI_API_KEY not found in environment.")
 openai.api_key = access_token
+
+EXCLUDED_CHATS = ["image", "info"]
+INITIAL_CHATLOG = [
+    {"role": "system", "content": "You are a helpful assistant"},
+    {
+        "role": "info",
+        "content": (
+            "Hello!\n\nI'm a personal assistant chatbot. I will respond as"
+            " best I can to any messages you send me.\n\nI can also generate"
+            " images based on a prompt you send using '/image ' followed by"
+            " the prompt.\n\nHow may I assist you today?"
+        ),
+    },
+]
 
 # FastAPI app
 app = FastAPI()
@@ -33,41 +46,69 @@ app.add_middleware(
 
 
 # Log of all user, system, and assistant prompts
-app.chat_log = [{"role": "system", "content": "You are a helpful assistant"}]
+chat_log = list(INITIAL_CHATLOG)
 
 # Canned chat log for testing purposes, to pad the chat history
-# app.chat_log.append({
-#     "role": "user",
-#     "content": "What was the most popular Christmas gift in 1992?"
-# })
-# app.chat_log.append({
-#     "role": "assistant",
-#     "content": "In 1992, one of the most popular Christmas gifts was the Super Nintendo Entertainment System (SNES). This gaming console was highly sought after and came with popular games like Super Mario World and The Legend of Zelda: A Link to the Past."
-# })
-# app.chat_log.append({
-#     "role": "user",
-#     "content": "What about the second?"
-# })
-# app.chat_log.append({
-#     "role": "assistant",
-#     "content": "The second most popular Christmas gift in 1992 was the Talkboy, which gained immense popularity due to its appearance in the movie Home Alone 2: Lost in New York. The Talkboy was a handheld cassette recorder and player that allowed users to record and modify their voices. Its inclusion in the movie led to a surge in demand and made it a sought-after gift during that holiday season."
-# })
-# app.chat_log.append({
-#     "role": "user",
-#     "content": "What year did the first movie in that franchise come out?"
-# })
-# app.chat_log.append({
-#     "role": "assistant",
-#     "content": "The first movie in the Home Alone franchise, simply titled Home Alone, was released in 1990. It was directed by Chris Columbus and starred Macaulay Culkin as Kevin McCallister, a young boy who is accidentally left behind when his family goes on vacation during Christmas. The film became a massive success and remains a beloved holiday classic."
-# })
-# app.chat_log.append({
-#     "role": "user",
-#     "content": "What day was that released in theaters?"
-# })
-# app.chat_log.append({
-#     "role": "assistant",
-#     "content": "Home Alone was released in theaters on November 16, 1990."
-# })
+chat_log.append(
+    {
+        "role": "user",
+        "content": "What was the most popular Christmas gift in 1992?",
+    }
+)
+chat_log.append(
+    {
+        "role": "assistant",
+        "content": (
+            "In 1992, one of the most popular Christmas gifts was the Super"
+            " Nintendo Entertainment System (SNES). This gaming console was"
+            " highly sought after and came with popular games like Super Mario"
+            " World and The Legend of Zelda: A Link to the Past."
+        ),
+    }
+)
+chat_log.append({"role": "user", "content": "What about the second?"})
+chat_log.append(
+    {
+        "role": "assistant",
+        "content": (
+            "The second most popular Christmas gift in 1992 was the Talkboy,"
+            " which gained immense popularity due to its appearance in the"
+            " movie Home Alone 2: Lost in New York. The Talkboy was a handheld"
+            " cassette recorder and player that allowed users to record and"
+            " modify their voices. Its inclusion in the movie led to a surge"
+            " in demand and made it a sought-after gift during that holiday"
+            " season."
+        ),
+    }
+)
+chat_log.append(
+    {
+        "role": "user",
+        "content": "What year did the first movie in that franchise come out?",
+    }
+)
+chat_log.append(
+    {
+        "role": "assistant",
+        "content": (
+            "The first movie in the Home Alone franchise, simply titled Home"
+            " Alone, was released in 1990. It was directed by Chris Columbus"
+            " and starred Macaulay Culkin as Kevin McCallister, a young boy"
+            " who is accidentally left behind when his family goes on vacation"
+            " during Christmas. The film became a massive success and remains"
+            " a beloved holiday classic."
+        ),
+    }
+)
+chat_log.append(
+    {"role": "user", "content": "What day was that released in theaters?"}
+)
+chat_log.append(
+    {
+        "role": "assistant",
+        "content": "Home Alone was released in theaters on November 16, 1990.",
+    }
+)
 
 
 class UserInputIn(BaseModel):
@@ -76,54 +117,74 @@ class UserInputIn(BaseModel):
 
 @app.get("/")
 async def get_chat_logs():
-    return JSONResponse(content=app.chat_log)
+    global chat_log
+
+    return chat_log
 
 
 @app.post("/")
 async def chat(request: Request, user_input: UserInputIn):
+    global chat_log
+
     # Append user input to chat log
-    app.chat_log.append({"role": "user", "content": user_input.prompt})
-    ai_prompts = [log_entry for log_entry in app.chat_log if not log_entry.get("role") == "image"]
+    chat_log.append({"role": "user", "content": user_input.prompt})
+    ai_prompts = [
+        log_entry
+        for log_entry in chat_log
+        if not log_entry.get("role") in EXCLUDED_CHATS
+    ]
 
     # Make call to OpenAI API
     response = openai.ChatCompletion.create(
         model="gpt-3.5-turbo",
         messages=ai_prompts,
         temperature=0.8,
-        max_tokens=500
+        max_tokens=500,
     )
 
     # Get response from OpenAI API
     bot_response = response.get("choices", [])[0].get("message").get("content")
 
     # Append assistant response to chat log
-    app.chat_log.append({"role": "assistant", "content": bot_response})
+    chat_log.append({"role": "assistant", "content": bot_response})
 
-    return JSONResponse(content=app.chat_log)
+    return chat_log
+
 
 @app.post("/i")
 async def chat(request: Request, user_input: UserInputIn):
+    global chat_log
+
     # Append user input to chat log
-    app.chat_log.append({"role": "user", "content": user_input.prompt})
+    chat_log.append({"role": "user", "content": user_input.prompt})
+    chat_log.append(
+        {
+            "role": "info",
+            "content": (
+                "Please wait a moment while I generate that image for you..."
+            ),
+        },
+    )
 
     # Make call to OpenAI API
     response = openai.Image.create(
-        prompt=user_input.prompt,
-        n=1,
-        size="1024x1024"
+        prompt=user_input.prompt, n=1, size="512x512"
     )
 
     # Get response from OpenAI API
     bot_response = response.get("data", [])[0].get("url")
 
     # Append assistant response to chat log
-    app.chat_log.append({"role": "image", "content": bot_response})
+    chat_log.append({"role": "image", "content": bot_response})
 
-    return JSONResponse(content=bot_response)
+    return bot_response
+
 
 @app.delete("/")
 async def clear_chat_log():
-    # Re-initialize the chat log
-    app.chat_log = [{"role": "system", "content": "You are a helpful assistant"}]
+    global chat_log, INITIAL_CHATLOG
 
-    return JSONResponse(content=app.chat_log)
+    # Re-initialize the chat log
+    chat_log = list(INITIAL_CHATLOG)
+
+    return chat_log

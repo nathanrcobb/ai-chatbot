@@ -13,6 +13,11 @@ function Home() {
     const [inputDisabled, setInputDisabled] = useState(false);
     const [userInput, setUserInput] = useState("");
 
+    const scrollToBottom = () => {
+        const chat_window = document.querySelector("#chat-log").parentElement;
+        chat_window.scrollTo(0, chat_window.scrollHeight);
+    };
+
     const fetchMessages = async () => {
         const res = await fetch(`${baseURL}/`, {
             method: "GET",
@@ -20,10 +25,14 @@ function Home() {
         });
         const data = await res.json();
         setMessages(data);
+
+        setTimeout(scrollToBottom, 200);
     };
 
     useEffect(() => {
         fetchMessages();
+
+        // eslint-disable-next-line
     }, []);
 
     const handleKeyDown = (e) => {
@@ -45,7 +54,19 @@ function Home() {
             setInputDisabled(true);
             setUserTyping(false);
             setLoading(true);
-            setMessages([...messages, { role: "user", content: userInput }]);
+            setMessages([
+                ...messages,
+                { role: "user", content: userInput },
+                ...(isImagePrompt
+                    ? [
+                          {
+                              role: "info",
+                              content:
+                                  "Please wait a moment while I generate that image for you...",
+                          },
+                      ]
+                    : []),
+            ]);
             setUserInput("");
 
             await fetch(`${baseURL}/${isImagePrompt ? "i" : ""}`, {
@@ -60,12 +81,6 @@ function Home() {
                 setInputDisabled(false);
                 fetchMessages();
             });
-
-            setTimeout(() => {
-                const chat_window =
-                    document.querySelector("#chat-log").parentElement;
-                chat_window.scrollTo(0, chat_window.scrollHeight);
-            }, 200);
         }
     };
 
@@ -88,7 +103,7 @@ function Home() {
                 <div>
                     <h3 className="row font-roboto-bold">Personal Chatbot</h3>
                 </div>
-                {messages && messages.length > 1 && (
+                {messages && messages.length > 2 && (
                     <button
                         id="chat-reset"
                         className="btn btn-warning"
@@ -107,6 +122,7 @@ function Home() {
                     messages={messages}
                     userTyping={userTyping}
                     loading={loading}
+                    scrollToBottom={scrollToBottom}
                 />
 
                 <TextInput
