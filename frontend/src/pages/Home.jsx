@@ -19,14 +19,23 @@ function Home() {
     };
 
     const fetchMessages = async () => {
-        const res = await fetch(`${baseURL}/`, {
-            method: "GET",
-            headers: { "Content-Type": "application/json" },
-        });
-        const data = await res.json();
-        setMessages(data);
-
-        setTimeout(scrollToBottom, 200);
+        try {
+            const res = await fetch(`${baseURL}/`, {
+                method: "GET",
+                headers: { "Content-Type": "application/json" },
+            });
+            if (!res.ok) {
+                console.log(`HTTP error: ${res.status}.`);
+            }
+            if (res.status !== 200) {
+                console.log(`Invalid response received.`);
+            }
+            const data = await res.json();
+            setMessages(data);
+        } catch (error) {
+            console.log(`Fetch error: ${error}`);
+        }
+        setTimeout(scrollToBottom, 300);
     };
 
     useEffect(() => {
@@ -69,18 +78,31 @@ function Home() {
             ]);
             setUserInput("");
 
-            await fetch(`${baseURL}/${isImagePrompt ? "i" : ""}`, {
-                method: "POST",
-                headers: {
-                    Accept: "application/json",
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({ prompt: userInput }),
-            }).then(() => {
-                setLoading(false);
-                setInputDisabled(false);
-                fetchMessages();
-            });
+            try {
+                const res = await fetch(
+                    `${baseURL}/${isImagePrompt ? "i" : ""}`,
+                    {
+                        method: "POST",
+                        headers: {
+                            Accept: "application/json",
+                            "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify({ prompt: userInput }),
+                    }
+                );
+                if (!res.ok) {
+                    console.log(`HTTP error: ${res.status}.`);
+                }
+                if (res.status !== 200) {
+                    console.log(`Invalid response received.`);
+                }
+            } catch (error) {
+                console.log(`Fetch error: ${error}`);
+            }
+
+            fetchMessages();
+            setLoading(false);
+            setInputDisabled(false);
         }
     };
 
@@ -88,11 +110,21 @@ function Home() {
         setInputDisabled(true);
         setUserTyping(false);
         setLoading(false);
-        const res = await fetch(`${baseURL}/`, {
-            method: "DELETE",
-        });
-        const data = await res.json();
-        setMessages(data);
+        try {
+            const res = await fetch(`${baseURL}/`, {
+                method: "DELETE",
+            });
+            if (!res.ok) {
+                console.log(`HTTP error: ${res.status}.`);
+            }
+            if (res.status !== 200) {
+                console.log(`Invalid response received.`);
+            }
+            const data = await res.json();
+            setMessages(data);
+        } catch (error) {
+            console.log(`Fetch error: ${error}`);
+        }
         setLoading(false);
         setInputDisabled(false);
     };
