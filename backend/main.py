@@ -49,66 +49,66 @@ app.add_middleware(
 chat_log = list(INITIAL_CHATLOG)
 
 # Canned chat log for testing purposes, to pad the chat history
-chat_log.append(
-    {
-        "role": "user",
-        "content": "What was the most popular Christmas gift in 1992?",
-    }
-)
-chat_log.append(
-    {
-        "role": "assistant",
-        "content": (
-            "In 1992, one of the most popular Christmas gifts was the Super"
-            " Nintendo Entertainment System (SNES). This gaming console was"
-            " highly sought after and came with popular games like Super Mario"
-            " World and The Legend of Zelda: A Link to the Past."
-        ),
-    }
-)
-chat_log.append({"role": "user", "content": "What about the second?"})
-chat_log.append(
-    {
-        "role": "assistant",
-        "content": (
-            "The second most popular Christmas gift in 1992 was the Talkboy,"
-            " which gained immense popularity due to its appearance in the"
-            " movie Home Alone 2: Lost in New York. The Talkboy was a handheld"
-            " cassette recorder and player that allowed users to record and"
-            " modify their voices. Its inclusion in the movie led to a surge"
-            " in demand and made it a sought-after gift during that holiday"
-            " season."
-        ),
-    }
-)
-chat_log.append(
-    {
-        "role": "user",
-        "content": "What year did the first movie in that franchise come out?",
-    }
-)
-chat_log.append(
-    {
-        "role": "assistant",
-        "content": (
-            "The first movie in the Home Alone franchise, simply titled Home"
-            " Alone, was released in 1990. It was directed by Chris Columbus"
-            " and starred Macaulay Culkin as Kevin McCallister, a young boy"
-            " who is accidentally left behind when his family goes on vacation"
-            " during Christmas. The film became a massive success and remains"
-            " a beloved holiday classic."
-        ),
-    }
-)
-chat_log.append(
-    {"role": "user", "content": "What day was that released in theaters?"}
-)
-chat_log.append(
-    {
-        "role": "assistant",
-        "content": "Home Alone was released in theaters on November 16, 1990.",
-    }
-)
+# chat_log.append(
+#     {
+#         "role": "user",
+#         "content": "What was the most popular Christmas gift in 1992?",
+#     }
+# )
+# chat_log.append(
+#     {
+#         "role": "assistant",
+#         "content": (
+#             "In 1992, one of the most popular Christmas gifts was the Super"
+#             " Nintendo Entertainment System (SNES). This gaming console was"
+#             " highly sought after and came with popular games like Super Mario"
+#             " World and The Legend of Zelda: A Link to the Past."
+#         ),
+#     }
+# )
+# chat_log.append({"role": "user", "content": "What about the second?"})
+# chat_log.append(
+#     {
+#         "role": "assistant",
+#         "content": (
+#             "The second most popular Christmas gift in 1992 was the Talkboy,"
+#             " which gained immense popularity due to its appearance in the"
+#             " movie Home Alone 2: Lost in New York. The Talkboy was a handheld"
+#             " cassette recorder and player that allowed users to record and"
+#             " modify their voices. Its inclusion in the movie led to a surge"
+#             " in demand and made it a sought-after gift during that holiday"
+#             " season."
+#         ),
+#     }
+# )
+# chat_log.append(
+#     {
+#         "role": "user",
+#         "content": "What year did the first movie in that franchise come out?",
+#     }
+# )
+# chat_log.append(
+#     {
+#         "role": "assistant",
+#         "content": (
+#             "The first movie in the Home Alone franchise, simply titled Home"
+#             " Alone, was released in 1990. It was directed by Chris Columbus"
+#             " and starred Macaulay Culkin as Kevin McCallister, a young boy"
+#             " who is accidentally left behind when his family goes on vacation"
+#             " during Christmas. The film became a massive success and remains"
+#             " a beloved holiday classic."
+#         ),
+#     }
+# )
+# chat_log.append(
+#     {"role": "user", "content": "What day was that released in theaters?"}
+# )
+# chat_log.append(
+#     {
+#         "role": "assistant",
+#         "content": "Home Alone was released in theaters on November 16, 1990.",
+#     }
+# )
 
 
 class UserInputIn(BaseModel):
