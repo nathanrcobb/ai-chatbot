@@ -50,7 +50,7 @@ origins = [
     "http://localhost:8000",
     "http://localhost:3000",
     "https://ai-chatbot-git-main-nathanrcobb.vercel.app",
-    "https://ai-chatbot-five-bice.vercel.app/",
+    "https://ai-chatbot-five-bice.vercel.app",
 ]
 
 app.add_middleware(
