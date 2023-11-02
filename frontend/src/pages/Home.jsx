@@ -5,7 +5,7 @@ import TextInput from "../components/TextInput";
 import ApiKeyModal from "../components/ApiKeyModal";
 
 function Home() {
-    const baseURL = process.env.BASE_URL ?? "http://localhost:8000";
+    const baseURL = process.env.REACT_APP_BASE_URL ?? "http://localhost:8000";
 
     const [apiKeyError, setApiKeyError] = useState(false);
     const [error, setError] = useState(false);
