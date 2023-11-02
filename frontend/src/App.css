@@ -169,6 +169,9 @@ body {
     animation-duration: 0.1s;
     animation-iteration-count: 3;
 }
+.tooltip.apikey {
+    top: -1rem;
+}
 
 /* Animations */
 @keyframes wiggle {

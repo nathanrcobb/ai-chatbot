@@ -2,8 +2,9 @@ import os
 
 from dotenv import load_dotenv
 import openai
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, HTTPException, Request, Security, status
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.security import APIKeyHeader, APIKeyQuery
 from pydantic import BaseModel
 
 # Load environment variables
@@ -12,6 +13,10 @@ access_token = os.getenv("OPENAI_API_KEY", "")
 if not access_token:
     raise KeyError("OPENAI_API_KEY not found in environment.")
 openai.api_key = access_token
+
+api_key = os.getenv("ACCEPTED_API_KEY", "")
+if not api_key:
+    raise KeyError("ACCEPTED_API_KEY not found in environment.")
 
 EXCLUDED_CHATS = ["image", "info"]
 INITIAL_CHATLOG = [
@@ -43,6 +48,8 @@ app.add_middleware(
     allow_headers=["*"],
     max_age=3600,
 )
+
+api_key_header = APIKeyHeader(name="x-api-key", auto_error=False)
 
 
 # Log of all user, system, and assistant prompts
@@ -115,6 +122,29 @@ class UserInputIn(BaseModel):
     prompt: str
 
 
+def get_api_key(
+    api_key_header: str = Security(api_key_header),
+) -> str:
+    """Retrieve and validate an API key from the HTTP header.
+
+    Args:
+        api_key_header: The API key passed in the HTTP header.
+
+    Returns:
+        The validated API key.
+
+    Raises:
+        HTTPException: If the API key is invalid or missing.
+    """
+
+    if api_key_header == api_key:
+        return api_key_header
+    raise HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail="Invalid or missing API Key",
+    )
+
+
 @app.get("/")
 async def get_chat_logs():
     global chat_log
@@ -123,7 +153,11 @@ async def get_chat_logs():
 
 
 @app.post("/")
-async def chat(request: Request, user_input: UserInputIn):
+async def chat(
+    request: Request,
+    user_input: UserInputIn,
+    api_key: str = Security(get_api_key),
+):
     global chat_log
 
     # Append user input to chat log
@@ -152,7 +186,11 @@ async def chat(request: Request, user_input: UserInputIn):
 
 
 @app.post("/i")
-async def chat(request: Request, user_input: UserInputIn):
+async def chat(
+    request: Request,
+    user_input: UserInputIn,
+    api_key: str = Security(get_api_key),
+):
     global chat_log
 
     # Append user input to chat log
