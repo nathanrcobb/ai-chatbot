@@ -7,7 +7,7 @@ import ChatLog from "../components/ChatLog";
 import TextInput from "../components/TextInput";
 
 function Home() {
-    const baseURL = "http://localhost:8000";
+    const baseURL = process.env.BASE_URL ?? "http://localhost:8000";
 
     const [apiKeyError, setApiKeyError] = useState(false);
     const [error, setError] = useState(false);

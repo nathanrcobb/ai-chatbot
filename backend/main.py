@@ -1,22 +1,29 @@
 import os
 
-from dotenv import load_dotenv
+production = False
+try:
+    from dotenv import load_dotenv
+except ImportError:
+    production = True
+
 import openai
 from fastapi import FastAPI, HTTPException, Request, Security, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import APIKeyHeader, APIKeyQuery
 from pydantic import BaseModel
+from mangum import Mangum
 
-# Load environment variables
-load_dotenv()
-access_token = os.getenv("OPENAI_API_KEY", "")
-if not access_token:
-    raise KeyError("OPENAI_API_KEY not found in environment.")
-openai.api_key = access_token
+# Load environment variables, if in dev env
+if not production:
+    load_dotenv()
+    access_token = os.getenv("OPENAI_API_KEY", "")
+    if not access_token:
+        raise KeyError("OPENAI_API_KEY not found in environment.")
+    openai.api_key = access_token
 
-api_key = os.getenv("ACCEPTED_API_KEY", "")
-if not api_key:
-    raise KeyError("ACCEPTED_API_KEY not found in environment.")
+    api_key = os.getenv("ACCEPTED_API_KEY", "")
+    if not api_key:
+        raise KeyError("ACCEPTED_API_KEY not found in environment.")
 
 EXCLUDED_CHATS = ["image", "info"]
 INITIAL_CHATLOG = [
@@ -34,6 +41,9 @@ INITIAL_CHATLOG = [
 
 # FastAPI app
 app = FastAPI()
+
+# Create handler for AWS
+handler = Mangum(app)
 
 origins = [
     "http://localhost:8000",
@@ -125,18 +135,6 @@ class UserInputIn(BaseModel):
 def get_api_key(
     api_key_header: str = Security(api_key_header),
 ) -> str:
-    """Retrieve and validate an API key from the HTTP header.
-
-    Args:
-        api_key_header: The API key passed in the HTTP header.
-
-    Returns:
-        The validated API key.
-
-    Raises:
-        HTTPException: If the API key is invalid or missing.
-    """
-
     if api_key_header == api_key:
         return api_key_header
     raise HTTPException(
