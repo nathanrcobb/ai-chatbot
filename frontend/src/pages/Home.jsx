@@ -1,10 +1,8 @@
 import { useEffect, useState } from "react";
 
-import Button from "react-bootstrap/Button";
-import Form from "react-bootstrap/Form";
-import Modal from "react-bootstrap/Modal";
 import ChatLog from "../components/ChatLog";
 import TextInput from "../components/TextInput";
+import ApiKeyModal from "../components/ApiKeyModal";
 
 function Home() {
     const baseURL = process.env.BASE_URL ?? "http://localhost:8000";
@@ -199,46 +197,12 @@ function Home() {
     return (
         <>
             {!apiKey && (
-                <Modal show={show} centered>
-                    <Modal.Header onHide={() => setShow(false)} closeButton>
-                        <Modal.Title>API Key</Modal.Title>
-                    </Modal.Header>
-
-                    <Modal.Body>
-                        <Form>
-                            <Form.Group
-                                className="mb-3"
-                                controlId="apiKeyForm.input"
-                            >
-                                {apiKeyError && (
-                                    <h5 className="tooltip apikey">
-                                        Invalid API Key.
-                                    </h5>
-                                )}
-                                <Form.Control
-                                    type="text"
-                                    placeholder="API Key"
-                                    autoFocus
-                                />
-                            </Form.Group>
-                        </Form>
-                    </Modal.Body>
-
-                    <Modal.Footer>
-                        <Button
-                            variant="secondary"
-                            onClick={() => setShow(false)}
-                        >
-                            Close
-                        </Button>
-                        <Button
-                            variant="primary"
-                            onClick={handleAPIKeyModalClick}
-                        >
-                            Confirm
-                        </Button>
-                    </Modal.Footer>
-                </Modal>
+                <ApiKeyModal
+                    show={show}
+                    setShow={setShow}
+                    apiKeyError={apiKeyError}
+                    handleAPIKeyModalClick={handleAPIKeyModalClick}
+                />
             )}
             <div className="container mt-5">
                 <div id="header">
