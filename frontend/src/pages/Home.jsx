@@ -103,6 +103,7 @@ function Home() {
     const handleKeyDown = (e) => {
         if (e.key === "Enter") {
             e.preventDefault();
+            console.log(e.target);
             handleUserInputSubmit();
         }
     };

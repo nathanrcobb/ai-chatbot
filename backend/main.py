@@ -3,6 +3,7 @@ import os
 production = False
 try:
     from dotenv import load_dotenv
+    import uvicorn
 except ImportError:
     production = True
 
@@ -225,3 +226,7 @@ async def clear_chat_log():
     chat_log = list(INITIAL_CHATLOG)
 
     return chat_log
+
+
+if __name__ == "__main__":
+    uvicorn.run("main:app", host="127.0.0.1", port=8000)
