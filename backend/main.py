@@ -2,11 +2,11 @@ import os
 
 production = False
 try:
-    from dotenv import load_dotenv
     import uvicorn
 except ImportError:
     production = True
 
+from dotenv import load_dotenv
 import openai
 from fastapi import FastAPI, HTTPException, Request, Security, status
 from fastapi.middleware.cors import CORSMiddleware
@@ -15,16 +15,16 @@ from pydantic import BaseModel
 from mangum import Mangum
 
 # Load environment variables, if in dev env
-if not production:
-    load_dotenv()
-    access_token = os.getenv("OPENAI_API_KEY", "")
-    if not access_token:
-        raise KeyError("OPENAI_API_KEY not found in environment.")
-    openai.api_key = access_token
+# if not production:
+load_dotenv()
+access_token = os.getenv("OPENAI_API_KEY", "")
+if not access_token:
+    raise KeyError("OPENAI_API_KEY not found in environment.")
+openai.api_key = access_token
 
-    api_key = os.getenv("ACCEPTED_API_KEY", "")
-    if not api_key:
-        raise KeyError("ACCEPTED_API_KEY not found in environment.")
+api_key = os.getenv("ACCEPTED_API_KEY", "")
+if not api_key:
+    raise KeyError("ACCEPTED_API_KEY not found in environment.")
 
 EXCLUDED_CHATS = ["image", "info"]
 INITIAL_CHATLOG = [
@@ -230,4 +230,5 @@ async def clear_chat_log():
 
 
 if __name__ == "__main__":
-    uvicorn.run("main:app", host="127.0.0.1", port=8000)
+    if not production:
+        uvicorn.run("main:app", host="127.0.0.1", port=8000)
