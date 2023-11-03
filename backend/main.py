@@ -220,7 +220,7 @@ async def chat(
 
 
 @app.delete("/")
-async def clear_chat_log():
+async def clear_chat_log(api_key: str = Security(get_api_key)):
     global chat_log, INITIAL_CHATLOG
 
     # Re-initialize the chat log
