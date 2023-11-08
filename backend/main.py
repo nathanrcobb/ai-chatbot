@@ -10,6 +10,8 @@ from dotenv import load_dotenv
 import openai
 from fastapi import FastAPI, HTTPException, Request, Security, status
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.openapi.docs import get_swagger_ui_html
+from fastapi.openapi.utils import get_openapi
 from fastapi.security import APIKeyHeader, APIKeyQuery
 from pydantic import BaseModel
 from mangum import Mangum
@@ -41,7 +43,7 @@ INITIAL_CHATLOG = [
 ]
 
 # FastAPI app
-app = FastAPI()
+app = FastAPI(docs_url=None, redoc_url=None, openapi_url=None)
 
 # Create handler for AWS
 handler = Mangum(app)
@@ -62,6 +64,7 @@ app.add_middleware(
     max_age=3600,
 )
 
+api_key_query = APIKeyQuery(name="api-key", auto_error=False)
 api_key_header = APIKeyHeader(name="x-api-key", auto_error=False)
 
 
@@ -136,14 +139,32 @@ class UserInputIn(BaseModel):
 
 
 def get_api_key(
+    api_key_query: str = Security(api_key_query),
     api_key_header: str = Security(api_key_header),
 ) -> str:
+    if api_key_query == api_key:
+        return api_key_query
     if api_key_header == api_key:
         return api_key_header
     raise HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Invalid or missing API Key",
     )
+
+
+@app.get("/docs", include_in_schema=False)
+async def get_documentation(api_key: str = Security(get_api_key)):
+    openapi_url = "/openapi.json"
+    if api_key:
+        openapi_url += f"?api-key={api_key}"
+    print(openapi_url)
+
+    return get_swagger_ui_html(openapi_url=openapi_url, title="docs")
+
+
+@app.get("/openapi.json", include_in_schema=False)
+async def openapi(api_key: str = Security(get_api_key)):
+    return get_openapi(title="FastAPI", version="0.1.0", routes=app.routes)
 
 
 @app.get("/")
