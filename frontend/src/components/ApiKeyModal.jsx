@@ -16,15 +16,8 @@ function ApiKeyModal({ show, setShow, apiKeyError, handleAPIKeyModalClick }) {
                             <h5 className="tooltip apikey">Invalid API Key.</h5>
                         )}
                         <Form.Label>
-                            Please enter:
-                            <img
-                                src="/use_this.png"
-                                alt="use this"
-                                style={{ height: "1.25rem", width: "17rem" }}
-                            />
-                            <br />
-                            Where the date is the first day the month of
-                            Halloween '23
+                            Please enter the email address listed on my public
+                            resume, which serves as the API key:
                         </Form.Label>
                         <Form.Control
                             type="text"

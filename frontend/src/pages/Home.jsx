@@ -205,13 +205,11 @@ function Home() {
                     handleAPIKeyModalClick={handleAPIKeyModalClick}
                 />
             )}
-            <div className="container mt-5">
+            <div className="container">
                 <div id="header">
-                    <div>
-                        <h3 className="row font-roboto-bold">
-                            Personal Chatbot
-                        </h3>
-                    </div>
+                    <h3 className="row font-roboto-bold mt-2">
+                        Personal Chatbot
+                    </h3>
                     {messages && messages.length > 2 && (
                         <button
                             id="chat-reset"

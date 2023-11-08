@@ -1,0 +1,88 @@
+@use "./variables" as *;
+
+/* Animations */
+@mixin fade-in {
+    animation-name: fade-in;
+    animation-duration: 0.25s;
+    animation-timing-function: linear;
+}
+
+@mixin fade($delay) {
+    animation-name: fade;
+    animation-duration: 1s;
+    animation-timing-function: linear;
+    animation-delay: $delay;
+    animation-iteration-count: infinite;
+}
+
+@mixin message-bubble($type) {
+    width: fit-content;
+    max-width: 75%;
+
+    @if $type == "user" {
+        margin-left: auto;
+    }
+    @if $type == "assistant" {
+        margin-right: auto;
+    }
+}
+
+@mixin loading-bubble-with-dots($color, $margin-left, $margin-right) {
+    @include loading-bubble($color, $margin-left, $margin-right);
+
+    > ul {
+        @include centered-with-padding(1rem);
+
+        > li {
+            @include dot-loading;
+        }
+    }
+}
+
+@mixin centered-with-padding($padding) {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-left: $padding;
+    padding-right: $padding;
+}
+
+@mixin loading-bubble($color, $margin-left, $margin-right) {
+    background-color: $color;
+    border-radius: 20px;
+    width: fit-content;
+    height: 2.5rem;
+    margin-top: 0.5rem;
+    margin-right: $margin-right;
+    margin-left: $margin-left;
+    animation: fade-in 0.25s linear;
+}
+
+@mixin dot-loading {
+    list-style: none;
+    height: 8px;
+    width: 8px;
+    background-color: $dot-color;
+    margin-top: 1rem;
+    margin-right: 0.25rem;
+    border-radius: 50%;
+    @include fade(1s);
+}
+
+@mixin tooltip($top-offset) {
+    position: absolute;
+    background-color: $color-warning;
+    color: black;
+    border-radius: $default-border-radius;
+    padding: 0.3rem;
+    top: $top-offset;
+    left: 1.25rem;
+    z-index: 1;
+    opacity: 100;
+    animation: wiggle 0.1s 3;
+}
+
+@mixin font-roboto {
+    font-family: sans-serif; /* Legacy fallback */
+    font-family: $custom-font-roboto;
+}

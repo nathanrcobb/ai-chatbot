@@ -1,0 +1,220 @@
+// Boostrap
+@use "~bootstrap/scss/bootstrap" as *;
+
+// Custom
+@use "./styles/mixins" as *;
+@use "./styles/variables" as *;
+
+body {
+    @include font-roboto;
+}
+
+// Header
+#header {
+    margin-top: 1.5rem;
+    margin-left: 1rem;
+    height: 6vh;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+@include media-breakpoint-up(lg) {
+    // Desktop
+    #header {
+        height: 3vh;
+    }
+}
+
+// Reset button
+#chat-reset {
+    border-radius: $default-border-radius;
+}
+
+// Chat Window
+.chat-window.full-chat {
+    // Phone
+    height: 74vh;
+}
+@include media-breakpoint-up(md) {
+    // Tablet
+    .chat-window.full-chat {
+        height: 80vh;
+    }
+}
+@include media-breakpoint-up(lg) {
+    // Desktop
+    .chat-window.full-chat {
+        height: 84vh;
+    }
+}
+@media (max-height: 720px) {
+    // Small phone
+    .chat-window.full-chat {
+        height: 70vh;
+    }
+}
+.chat-window.partial-chat {
+    // Phone
+    height: 64vh;
+}
+@include media-breakpoint-up(md) {
+    // Tablet
+    .chat-window.partial-chat {
+        height: 74vh;
+    }
+}
+@include media-breakpoint-up(lg) {
+    // Desktop
+    .chat-window.partial-chat {
+        height: 78vh;
+    }
+}
+@media (max-height: 720px) {
+    // Small phone
+    .chat-window.partial-chat {
+        height: 60vh;
+    }
+}
+.chat-window.typing-status {
+    // Phones
+    height: 10vh;
+}
+@include media-breakpoint-up(md) {
+    // Desktops & Tablets
+    .chat-window.typing-status {
+        height: 6vh;
+    }
+}
+
+// Log of chat messages
+#chat-log {
+    height: 98%;
+    margin-bottom: 1rem;
+
+    #message-container {
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+    }
+
+    .chat-message {
+        width: 75%;
+        margin-top: 1rem;
+        margin-bottom: 1rem;
+        border-radius: 20px;
+        line-height: 1.4;
+        white-space: pre-wrap;
+    }
+
+    .chat-message.message-assistant {
+        @include message-bubble("assistant");
+    }
+
+    .chat-message.message-user {
+        @include message-bubble("user");
+    }
+
+    .chat-message.message-image {
+        width: fit-content;
+        max-width: 100%;
+        padding-top: 0.75rem;
+        padding-bottom: 0.75rem;
+
+        > a > img {
+            max-width: 100%;
+            border-radius: $default-border-radius;
+        }
+    }
+}
+
+#chat-input {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+
+    > textarea {
+        height: 4rem;
+        border-radius: $default-border-radius;
+        margin-right: 1rem;
+    }
+
+    > button {
+        height: 4rem;
+        width: 4rem;
+        border-radius: $default-border-radius;
+
+        > span {
+            font-size: 2rem;
+        }
+    }
+}
+
+#user-typing {
+    @include loading-bubble-with-dots($color-primary, auto, 0.5rem);
+}
+
+#assistant-typing {
+    @include loading-bubble-with-dots($color-secondary, 0.4rem, auto);
+}
+
+.tooltip {
+    @include tooltip(-2rem);
+}
+.tooltip.apikey {
+    @include tooltip(-1rem);
+}
+
+#user-typing,
+#assistant-typing {
+    > ul > li:nth-child(1) {
+        @include fade(0s);
+    }
+    > ul > li:nth-child(2) {
+        @include fade(0.1s);
+    }
+    > ul > li:nth-child(3) {
+        @include fade(0.2s);
+    }
+}
+
+/* Animations */
+@keyframes wiggle {
+    0% {
+        transform: rotate(0deg);
+    }
+    50% {
+        transform: rotate(2deg);
+    }
+    100% {
+        transform: rotate(-2deg);
+    }
+}
+
+@keyframes fade-in {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+@keyframes fade {
+    0%,
+    100% {
+        opacity: 0;
+    }
+    50% {
+        opacity: 1;
+    }
+}
+
+/* Fonts */
+.font-roboto {
+    @include font-roboto;
+}
+.font-roboto-bold {
+    @include font-roboto;
+    font-weight: 700;
+}
