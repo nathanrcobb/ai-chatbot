@@ -179,9 +179,21 @@ function Home() {
         try {
             const res = await fetch(`${baseURL}/`, {
                 method: "DELETE",
+                headers: {
+                    Accept: "application/json",
+                    "Content-Type": "application/json",
+                    "x-api-key": `${apiKey}`,
+                },
             });
             if (!res.ok) {
-                console.log(`HTTP error: ${res.status}.`);
+                if (res.status === 401) {
+                    resetCookie();
+                    setApiKey(null);
+                    console.log("Invalid API key.");
+                    setShow(true);
+                } else {
+                    console.log(`HTTP error: ${res.status}.`);
+                }
             }
             if (res.status !== 200) {
                 console.log(`Invalid response received.`);
