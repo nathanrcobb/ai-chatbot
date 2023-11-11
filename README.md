@@ -6,7 +6,7 @@
 
 A chatbot powered by OpenAI, presented in a iMessage-like experience, with a FastAPI backend.
 
-### Why Firebase?
+### Why this tech stack?
 
 This project focuses on leveraging React and FastAPI to create a streamlined iMessage-like experience chatting with an AI assistant. This was also an opportunity to leverage a cloud-based deployment using AWS Lambda.
 
